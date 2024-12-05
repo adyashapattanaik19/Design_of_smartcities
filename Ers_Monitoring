@@ -1,0 +1,61 @@
+class ElectricVehicle:
+    def __init__(self, vehicle_id, battery_capacity, initial_charge):
+        """
+        Initialize an Electric Vehicle.
+        Args:
+            vehicle_id (int): Unique identifier for the vehicle.
+            battery_capacity (float): Maximum battery capacity in kWh.
+            initial_charge (float): Initial state of charge (SoC) in kWh.
+        """
+        self.vehicle_id = vehicle_id
+        self.battery_capacity = battery_capacity
+        self.state_of_charge = initial_charge
+
+    def charge(self, energy):
+        """
+        Charge the vehicle by a specified amount of energy.
+        Args:
+            energy (float): Energy to be transferred in kWh.
+        """
+        self.state_of_charge = min(self.state_of_charge + energy, self.battery_capacity)
+    
+    def display_status(self):
+        print(f"Vehicle {self.vehicle_id} - State of Charge: {self.state_of_charge:.2f} kWh / {self.battery_capacity} kWh")
+class ElectricRoadSegment:
+    def __init__(self, segment_id, power_output):
+        """
+        Initialize an Electric Road Segment.
+        Args:
+            segment_id (int): Unique identifier for the road segment.
+            power_output (float): Power output in kW (assumed constant for simplicity).
+        """
+        self.segment_id = segment_id
+        self.power_output = power_output  # kW
+
+    def transfer_energy(self, vehicle, travel_time):
+        """
+        Transfer energy to a vehicle over a given travel time.
+        Args:
+            vehicle (ElectricVehicle): The vehicle to be charged.
+            travel_time (float): Time in hours the vehicle spends on the segment.
+        """
+        energy_transferred = self.power_output * travel_time  # Energy in kWh
+        vehicle.charge(energy_transferred)
+        print(f"Transferred {energy_transferred:.2f} kWh to Vehicle {vehicle.vehicle_id} on Segment {self.segment_id}.")
+def simulate_ers():
+    # Create a few example vehicles
+    vehicles = [
+        ElectricVehicle(vehicle_id=1, battery_capacity=100, initial_charge=20),
+        ElectricVehicle(vehicle_id=2, battery_capacity=120, initial_charge=50)
+    ]
+
+    # Create an electric road segment
+    road_segment = ElectricRoadSegment(segment_id=1, power_output=50)  # 50 kW power output
+
+    # Simulate each vehicle traveling on the road for 1 hour
+    travel_time = 1  # 1 hour
+    for vehicle in vehicles:
+        road_segment.transfer_energy(vehicle, travel_time)
+        vehicle.display_status()
+if __name__ == "__main__":
+    simulate_ers()
